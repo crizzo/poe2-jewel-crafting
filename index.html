@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5-Mod Jewel Crafting — Path of Exile 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #07080b;
+      --bg: #0b0d12;
+      --card: rgba(16, 18, 24, 0.72);
+      --card-edge: rgba(201, 164, 74, 0.22);
+      --gold: #c9a44a;
+      --gold-bright: #e8c86a;
+      --gold-dim: #7a6328;
+      --ink: #e6dcc8;
+      --muted: #9a8f7a;
+      --soft: #6f6758;
+      --emerald: #4aa37a;
+      --sapphire: #5a88c4;
+      --warn: #c46a4a;
+      --danger: #b54a3c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg-deep);
+      color: var(--ink);
+      font-family: "Source Sans 3", system-ui, sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(1200px 700px at 50% -10%, rgba(201, 164, 74, 0.08), transparent 55%),
+        radial-gradient(900px 600px at 110% 20%, rgba(58, 110, 165, 0.07), transparent 50%),
+        radial-gradient(800px 500px at -10% 80%, rgba(61, 139, 110, 0.07), transparent 50%),
+        linear-gradient(180deg, #0a0c11 0%, #07080b 40%, #0a0b0e 100%);
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.18;
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          115deg,
+          transparent 0 46px,
+          rgba(201, 164, 74, 0.015) 46px 47px
+        );
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 56px 22px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 42px;
+    }
+
+    .sigil {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      color: var(--gold);
+      letter-spacing: 0.34em;
+      font-family: Cinzel, serif;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .sigil::before,
+    .sigil::after {
+      content: "";
+      width: 64px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.7;
+    }
+
+    h1 {
+      font-family: Cinzel, serif;
+      font-weight: 600;
+      font-size: clamp(26px, 4.4vw, 42px);
+      letter-spacing: 0.04em;
+      color: var(--gold-bright);
+      text-shadow: 0 0 24px rgba(201, 164, 74, 0.18);
+      line-height: 1.2;
+    }
+
+    .lede {
+      margin-top: 12px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 20px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .gems {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .gem {
+      font-family: Cinzel, serif;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border: 1px solid;
+      border-radius: 2px;
+    }
+
+    .gem.emerald {
+      color: var(--emerald);
+      border-color: rgba(74, 163, 122, 0.45);
+      background: rgba(74, 163, 122, 0.08);
+    }
+
+    .gem.sapphire {
+      color: #7aa4d8;
+      border-color: rgba(90, 136, 196, 0.45);
+      background: rgba(90, 136, 196, 0.08);
+    }
+
+    .rule {
+      height: 1px;
+      margin: 36px 0 32px;
+      background: linear-gradient(90deg, transparent, rgba(201,164,74,0.45), transparent);
+      border: 0;
+    }
+
+    .needs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 18px;
+      margin-bottom: 8px;
+      padding: 20px 22px;
+      background: var(--card);
+      border: 1px solid var(--card-edge);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 18px 40px rgba(0,0,0,0.28);
+    }
+
+    .needs h2 {
+      grid-column: 1 / -1;
+      font-family: Cinzel, serif;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .needs li {
+      list-style: none;
+      font-size: 14px;
+      color: var(--ink);
+      padding-left: 14px;
+      position: relative;
+      line-height: 1.45;
+    }
+
+    .needs li::before {
+      content: "\25C6";
+      position: absolute;
+      left: 0;
+      color: var(--gold-dim);
+      font-size: 8px;
+      top: 5px;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 16px;
+      padding: 20px 22px 20px 16px;
+      background: var(--card);
+      border: 1px solid rgba(201, 164, 74, 0.16);
+      border-left: 2px solid var(--gold-dim);
+      position: relative;
+    }
+
+    .step:hover {
+      border-color: rgba(201, 164, 74, 0.38);
+      background: rgba(20, 22, 28, 0.82);
+    }
+
+    .num {
+      font-family: Cinzel, serif;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--gold);
+      text-align: center;
+      line-height: 1;
+      padding-top: 4px;
+    }
+
+    .num span {
+      display: block;
+      margin-top: 6px;
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--gold-dim);
+    }
+
+    .step h3 {
+      font-family: Cinzel, serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--gold-bright);
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 19px;
+      line-height: 1.45;
+      color: var(--ink);
+    }
+
+    .note {
+      margin-top: 10px;
+      font-family: "Source Sans 3", sans-serif;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid rgba(201,164,74,0.12);
+      padding-top: 9px;
+      line-height: 1.5;
+    }
+
+    .warn { color: #e0b09a; }
+    .warn strong { color: var(--warn); font-weight: 600; }
+    .good { color: #b7d4c4; }
+
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      color: var(--soft);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      line-height: 1.7;
+    }
+
+    footer .orn {
+      color: var(--gold-dim);
+      margin-bottom: 8px;
+      letter-spacing: 0.4em;
+    }
+
+    @media (max-width: 620px) {
+      .needs { grid-template-columns: 1fr; }
+      .step { grid-template-columns: 48px 1fr; padding-left: 10px; }
+      .num { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="sigil">Wraeclast Codex</div>
+      <h1>How to Craft the Best Jewels</h1>
+      <p class="lede">A compact 5-mod method for Emeralds and Sapphires.</p>
+      <div class="gems">
+        <span class="gem emerald">Emeralds</span>
+        <span class="gem sapphire">Sapphires</span>
+      </div>
+    </header>
+
+    <hr class="rule" />
+
+    <ul class="needs">
+      <h2>What you will need</h2>
+      <li>Fractured Crit Strike Damage base (20%)</li>
+      <li>Chaos Orbs</li>
+      <li>Potent Liquid Contempt</li>
+      <li>Preserved Cranium</li>
+      <li>Abyssal Echoes</li>
+      <li>Omens of Light</li>
+      <li>Sinistral Annulment</li>
+      <li>Exalted Orbs</li>
+      <li>Potent Liquid of Ferocity</li>
+    </ul>
+
+    <section class="steps">
+      <article class="step">
+        <div class="num">01<span>BASE</span></div>
+        <div>
+          <h3>Fracture Critical Strike Damage</h3>
+          <p>Buy or fracture Critical Strike Damage. You want <strong>20%</strong>.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="num">02<span>SUFFIX</span></div>
+        <div>
+          <h3>Chaos for Critical Hit Chance</h3>
+          <p>Chaos spam for Increased Critical Hit Chance.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="num">03<span>LIQUID</span></div>
+        <div>
+          <h3>Potent Liquid Contempt</h3>
+          <p>Confirm the jewel has 4 modifiers, then use <em>Potent Liquid Contempt</em>.</p>
+          <p class="note warn"><strong>Risk:</strong> 33% chance to remove your crit. Restart if that happens.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="num">04<span>UNVEIL</span></div>
+        <div>
+          <h3>Desecrate until Attack Speed</h3>
+          <p>Use Preserved Cranium with Abyssal Echoes and Omens of Light until you unveil Attack Speed.</p>
+          <p class="note good">Spell builds can unveil a second Crit Damage mod here instead.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="num">05<span>ANNUL</span></div>
+        <div>
+          <h3>Sinistral Annulment</h3>
+          <p>Once the desired mod is on, annul the prefix with a <em>Sinistral Annulment</em>.</p>
+          <p class="note warn"><strong>Miss:</strong> if you miss the +1 suffix, you will have to do this twice.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="num">06<span>EXALT</span></div>
+        <div>
+          <h3>Slam to Five Affixes</h3>
+          <p>Once the +1 suffix crafted mod is removed, exalt slam until the jewel has 5 affixes.</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="num">07<span>PREFIX</span></div>
+        <div>
+          <h3>Chaos for One Good Prefix</h3>
+          <p>Chaos spam for one good prefix:</p>
+          <p class="note">Projectile Damage · Elemental Damage · Damage vs Rares · Attack Damage</p>
+        </div>
+      </article>
+
+      <article class="step">
+        <div class="num">08<span>FINISH</span></div>
+        <div>
+          <h3>Potent Liquid of Ferocity</h3>
+          <p>Use <em>Potent Liquid of Ferocity</em>. This is a 50/50 to finish the craft.</p>
+          <p class="note good">If you hit your good mod, chaos spam again.</p>
+        </div>
+      </article>
+    </section>
+
+    <footer>
+      <div class="orn">◆ —— ◆</div>
+      Path of Exile 2 · 5-Mod Jewel Crafting<br />
+      Method as recorded for Emerald and Sapphire jewels.
+    </footer>
+  </div>
+</body>
+</html>
